@@ -1,0 +1,105 @@
+/* Reset default margin/padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Full-screen background with gradient */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f8f9fa;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Center the form in the middle of the screen */
+.login-container {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 40px 50px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+/* Header Styling */
+.login-container h2 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Input fields with clean design */
+.input-field {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+/* Focused input field style */
+.input-field:focus {
+    border-color: #0d6efd;
+    background-color: #fff;
+}
+
+/* Button Styling */
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Button Hover/Active States */
+.login-btn:hover {
+    background-color: #2575fc;
+    transform: scale(1.05);
+}
+
+/* Error message */
+.error-message {
+    color: #e74c3c;
+    margin-top: 10px;
+}
+
+/* Input field animations */
+.input-field::placeholder {
+    color: #888;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* Adding subtle animation */
+.login-container {
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

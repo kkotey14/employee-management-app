@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <!-- CSS files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='CSS/sidebars.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='CSS/dashboard.css') }}">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Flatpickr CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sidebars/">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+  <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="app-container">
+    <div class="sidebar flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+        <span class="fs-4">Dashboard</span>
+      </a>
+      <hr>
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+          <a href="{{ url_for('dashboard') }}" class="nav-link text-white" >
+            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+            Home
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('create_request') }}" class="nav-link text-white">
+            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+            Create Request
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('request_history') }}" class="nav-link text-white">
+            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+            History
+          </a>
+        </li>
+      </ul>
+      <hr>
+      <div class="dropdown">
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <strong>{{username}}</strong>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+          <li><a class="dropdown-item" href="{{ url_for('logout') }}">Log out</a></li>
+          <li><hr class="dropdown-divider"></li>
+        </ul>
+      </div>
+    </div>
+  <!-- Main Content -->
+    <div class="main-content">
+      <div class="requests-list">
+        <h2>HOMEPAGE PENDING</h2>
+      </div>
+    
+
+  </div>
+  
+
+  
+  <!-- Flatpickr JS -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    // Initialize Flatpickr on the dateRange input in range mode
+    flatpickr("#dateRange", {
+      mode: "range",
+      dateFormat: "Y-m-d",
+      onClose: function(selectedDates, dateStr, instance) {
+        if (selectedDates.length === 2) {
+          document.getElementById('startDate').value = instance.formatDate(selectedDates[0], "Y-m-d");
+          document.getElementById('endDate').value = instance.formatDate(selectedDates[1], "Y-m-d");
+        }
+      }
+    });
+  </script>
+  <!-- Bootstrap 5 JavaScript Bundle (includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="{{ url_for('static', filename='JS/sidebars.js') }}"></script>
+</body>
+</html>
+

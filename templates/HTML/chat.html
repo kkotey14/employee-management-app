@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .chat-container {
+            width: 400px;
+            height: 520px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+
+        .chat-header {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 10px;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+
+        .sent {
+            background-color: #d1e7dd;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .received {
+            background-color: #f8d7da;
+            align-self: flex-start;
+            text-align: left;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #ccc;
+        }
+
+        select, input, button {
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        select {
+            flex: 1;
+            margin-right: 5px;
+        }
+
+        input {
+            flex: 2;
+            margin-right: 5px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">Chat </div>
+
+        <div class="messages" id="messages"></div>
+
+        <div class="input-container">
+            <select id="receiver">
+                {% for user in users %}
+                    <option value="{{ user['username'] }}">{{ user['username'] }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" id="message" placeholder="Type a message">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        var socket = io();
+        var username = "{{ username }}";
+
+        // Join user to their own room
+        socket.emit("join", { username: username });
+
+        // Listen for incoming messages
+        socket.on("receive_message", function(data) {
+            displayMessage(data.sender, data.message);
+        });
+
+        // Function to send a message
+        function sendMessage() {
+            var receiver = document.getElementById("receiver").value;
+            var message = document.getElementById("message").value;
+            if (message.trim() === "") return;
+
+            // Display the message immediately in the sender's chat
+            displayMessage(username, message);
+
+            // Send the message to the server
+            socket.emit("send_message", { receiver: receiver, message: message });
+
+            // Clear input field
+            document.getElementById("message").value = "";
+        }
+
+        // Function to display messages
+        function displayMessage(sender, message) {
+            var messagesDiv = document.getElementById("messages");
+            var messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+
+            if (sender === username) {
+                messageDiv.classList.add("sent");
+            } else {
+                messageDiv.classList.add("received");
+            }
+
+            messageDiv.innerHTML = "<strong>" + sender + ":</strong> " + message;
+            messagesDiv.appendChild(messageDiv);
+
+            // Auto-scroll to the latest message
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    </script>
+
+           
+</body>
+</html>

@@ -55,7 +55,79 @@ def dashboard():
         """, (user_id,))
         user_requests = cursor.fetchall()
         conn.close()
-        return render_template("dashboard.html", username=username, requests=user_requests)
+
+        return render_template("HTML/dashboard.html", username=username, requests=user_requests)
+    return redirect(url_for("login"))
+
+@app.route("/create_request", methods=["GET","POST"])
+def create_request():
+    if "user" in session:
+        username = session["user"]
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+        user_row = cursor.fetchone()
+        if not user_row:
+            conn.close()
+            return "User not found", 404
+        user_id = user_row[0]
+
+        if request.method == "POST":
+            requestType = request.form["requestType"]
+            requestMessage = request.form["requestMessage"]
+            startDate = request.form["startDate"]
+            endDate = request.form["endDate"]
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            full_request = f"{requestType}: {requestMessage}"
+            cursor.execute("""
+                INSERT INTO requests (user_id, username, request, timestamp, status, start_date, end_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (user_id, username, full_request, timestamp, 'pending', startDate, endDate))
+            conn.commit()
+
+        cursor.execute("SELECT * FROM requests WHERE user_id = ? AND status = 'pending' ORDER BY timestamp DESC", (user_id,))
+        pending_requests = cursor.fetchall()
+        conn.close()
+
+        return render_template("HTML/create_request.html", username=username, requests=pending_requests)
+    return redirect(url_for("login"))
+
+@app.route("/request_history", methods=["GET","POST"])
+def request_history():
+    if "user" in session:
+        username = session["user"]
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+        user_row = cursor.fetchone()
+        if not user_row:
+            conn.close()
+            return "User not found", 404
+        user_id = user_row[0]
+
+        if request.method == "POST":
+            requestType = request.form["requestType"]
+            requestMessage = request.form["requestMessage"]
+            startDate = request.form["startDate"]
+            endDate = request.form["endDate"]
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            full_request = f"{requestType}: {requestMessage}"
+            cursor.execute("""
+                INSERT INTO requests (user_id, username, request, timestamp, status, start_date, end_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (user_id, username, full_request, timestamp, 'pending', startDate, endDate))
+            conn.commit()
+
+        cursor.execute("""
+            SELECT request, timestamp, status, start_date, end_date FROM requests
+            WHERE user_id = ? ORDER BY timestamp DESC
+        """, (user_id,))
+        user_requests = cursor.fetchall()
+        conn.close()
+
+        return render_template("HTML/request_history.html", username=username, requests=user_requests)
     return redirect(url_for("login"))
 
 @app.route("/clear_requests", methods=["POST"])
@@ -81,8 +153,7 @@ def manager_dashboard():
         cursor.execute("""
             SELECT id, username, request, timestamp, status, start_date, end_date 
             FROM requests 
-            ORDER BY timestamp DESC
-        """)
+            ORDER BY timestamp DESC""")
         all_requests = cursor.fetchall()
         conn.close()
         
@@ -112,7 +183,7 @@ def manager_dashboard():
                 "notification": notification
             })
         
-        return render_template("manager_dashboard.html", requests=processed_requests)
+        return render_template("HTML/manager_dashboard.html", requests=processed_requests)
     return redirect(url_for("login"))
 
 @app.route("/update_request/<int:request_id>/<action>", methods=['POST'])
@@ -172,7 +243,7 @@ def login():
                 return "Invalid credentials", 401
         except Exception as e:
             return f"An error occurred: {str(e)}", 500
-    return render_template("login.html")
+    return render_template("HTML/login.html")
 
 @app.route("/logout")
 def logout():
@@ -192,7 +263,7 @@ def admin_panel():
         cursor.execute("SELECT id, username, role FROM users")
         all_users = cursor.fetchall()
         conn.close()
-        return render_template("admin_panel.html", users=all_users)
+        return render_template("HTML/admin_panel.html", users=all_users)
     return redirect(url_for("login"))
 
 @app.route("/add_user", methods=["GET", "POST"])
@@ -210,7 +281,7 @@ def add_user():
             conn.commit()
             conn.close()
             return redirect(url_for("admin_panel"))
-        return render_template("create_user.html")
+        return render_template("HTML/create_user.html")
     return redirect(url_for("login"))
 
 @app.route("/edit_user/<int:user_id>", methods=["GET", "POST"])
@@ -231,7 +302,7 @@ def edit_user(user_id):
             user = cursor.fetchone()
             conn.close()
             if user:
-                return render_template("edit_user.html", user=user)
+                return render_template("HTML/edit_user.html", user=user)
             else:
                 return "User not found", 404
     return redirect(url_for("login"))
@@ -256,7 +327,7 @@ def admin_requests():
         cursor.execute("SELECT id, username, request, timestamp, status, start_date, end_date FROM requests ORDER BY timestamp DESC")
         all_requests = cursor.fetchall()
         conn.close()
-        return render_template("admin_requests.html", requests=all_requests)
+        return render_template("HTML/admin_requests.html", requests=all_requests)
     return redirect(url_for("login"))
 
 @app.route("/share_request/<int:request_id>")
