@@ -147,6 +147,7 @@ def clear_requests():
 @app.route("/manager_dashboard")
 def manager_dashboard():
     if "user" in session and session.get("role") == "manager":
+        username = session.get("user")
         conn = sqlite3.connect("users.db")
         cursor = conn.cursor()
         # Include start_date and end_date in the select query.
@@ -183,7 +184,7 @@ def manager_dashboard():
                 "notification": notification
             })
         
-        return render_template("HTML/manager_dashboard.html", requests=processed_requests)
+        return render_template("HTML/manager_dashboard.html", requests=processed_requests, username=username)
     return redirect(url_for("login"))
 
 @app.route("/update_request/<int:request_id>/<action>", methods=['POST'])
@@ -258,17 +259,19 @@ def logout():
 @app.route("/admin_panel")
 def admin_panel():
     if "user" in session and session.get("role") == "admin":
+        username = session.get("user")
         conn = sqlite3.connect("users.db")
         cursor = conn.cursor()
         cursor.execute("SELECT id, username, role FROM users")
         all_users = cursor.fetchall()
         conn.close()
-        return render_template("HTML/admin_panel.html", users=all_users)
+        return render_template("HTML/admin_panel.html", users=all_users, username=username)
     return redirect(url_for("login"))
 
 @app.route("/add_user", methods=["GET", "POST"])
 def add_user():
     if "user" in session and session.get("role") == "admin":
+        username = session.get("user")
         if request.method == "POST":
             username = request.form["username"]
             password = request.form["password"]
