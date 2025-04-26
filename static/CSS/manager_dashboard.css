@@ -46,6 +46,7 @@ td,th{
 th{
   background-color:#6a11cb;
   color:#fff;
+  cursor:pointer;
 }
 tr:nth-child(2n){
   background-color:#f9f9f9;
