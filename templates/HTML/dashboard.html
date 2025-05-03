@@ -58,13 +58,58 @@
     </div>
   <!-- Main Content -->
     <div class="main-content">
-      <div class="requests-list">
-        <h2>HOMEPAGE PENDING</h2>
-      </div>
-    
+        <canvas id="myChart"></canvas>
+    </div>
+    <div class="container-fluid px-5 pt-4">
 
-  </div>
+      <!-- Stats Cards -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-3">
+          <div class="card text-center shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="card-title">Total Hours</h5>
+              <p class="display-6">00:00</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="card-title">Pending Requests</h5>
+              <p class="display-6">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="card-title">Next Shift</h5>
+              <p class="card-text">May 6, 9:00 AM</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="card-title">Payroll Status</h5>
+              <p class="card-text">Pending</p>
+            </div>
+          </div>
+        </div>
+      </div>
   
+      <!-- To-Do and Announcements -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-6">
+          <div class="card shadow-sm">
+            <div class="card-header fw-bold">📝 To-Do List</div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"><input class="form-check-input me-2" type="checkbox"> Complete training module</li>
+              <li class="list-group-item"><input class="form-check-input me-2" type="checkbox"> Submit weekly report</li>
+              <li class="list-group-item"><input class="form-check-input me-2" type="checkbox"> Review schedule</li>
+            </ul>
+          </div>
+        </div>
 
   
   <!-- Flatpickr JS -->
@@ -84,6 +129,7 @@
   </script>
   <!-- Bootstrap 5 JavaScript Bundle (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.js" integrity="sha512-CWVDkca3f3uAWgDNVzW+W4XJbiC3CH84P2aWZXj+DqI6PNbTzXbl1dIzEHeNJpYSn4B6U8miSZb/hCws7FnUZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script src="{{ url_for('static', filename='JS/sidebars.js') }}"></script>
 </body>
