@@ -102,14 +102,14 @@
             </td>
             <td>
               {% if req.status == 'accepted' %}
-                <span class="notification">Admin has accepted this request.</span><br>
+                <span class="notification">Request Approved.</span><br>
                 <!-- Manager can override an accepted request -->
                 <form action="{{ url_for('update_request', request_id=req.id, action='decline') }}" method="POST" style="display:inline;">
                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                   <button type="submit" class="btn btn-danger">Override to Decline</button>
                 </form>
               {% elif req.status == 'declined' %}
-                <span class="notification">This request has been declined by Admin.</span><br>
+                <span class="notification">Request Declined.</span><br>
                 <!-- Manager can override a declined request -->
                 <form action="{{ url_for('update_request', request_id=req.id, action='accept') }}" method="POST" style="display:inline;">
                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
