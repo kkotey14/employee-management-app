@@ -14,7 +14,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Flatpickr CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sidebars/">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
   <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -43,7 +42,7 @@
       <hr>
       <div class="dropdown">
         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-          <strong>{{username}}</strong>
+          <strong>Welcome, {{username}}!</strong>
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
           <li><a class="dropdown-item" href="{{ url_for('logout') }}">Log out</a></li>
@@ -102,21 +101,18 @@
             </td>
             <td>
               {% if req.status == 'accepted' %}
-                <span class="notification">Request Approved.</span><br>
-                <!-- Manager can override an accepted request -->
+                <span class="notification">Request has been approved.</span><br>
                 <form action="{{ url_for('update_request', request_id=req.id, action='decline') }}" method="POST" style="display:inline;">
                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                   <button type="submit" class="btn btn-danger">Override to Decline</button>
                 </form>
               {% elif req.status == 'declined' %}
-                <span class="notification">Request Declined.</span><br>
-                <!-- Manager can override a declined request -->
+                <span class="notification">Request has been declined.</span><br>
                 <form action="{{ url_for('update_request', request_id=req.id, action='accept') }}" method="POST" style="display:inline;">
                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                   <button type="submit" class="btn btn-success">Override to Approve</button>
                 </form>
               {% elif req.status in ['pending', 'pending_manager'] %}
-                <!-- Manager handles pending requests -->
                 <form action="{{ url_for('update_request', request_id=req.id, action='accept') }}" method="POST" style="display:inline;">
                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                   <button type="submit" class="btn btn-success">Approve</button>
@@ -146,12 +142,10 @@
      	while (switching) {
      		switching = false;
         	rows = table.rows;
-        	//Loops through rows excluding headers
         	for (i = 1; i < (rows.length - 1); i++) {
       			willSwitch = false;
       			x = rows[i].getElementsByTagName("TD")[n];
      			y = rows[i + 1].getElementsByTagName("TD")[n];
-     			//check to switch based off direction
       			if (direction == "ascending") {
         			if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
           				willSwitch= true;
@@ -177,7 +171,6 @@
   	           }
 	       }
        </script>
-
 
     <!-- Clear All Requests Button -->
     <form id="clearForm" action="{{ url_for('clear_requests') }}" method="POST" onsubmit="return confirmClear()">
