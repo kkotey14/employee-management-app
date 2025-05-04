@@ -51,12 +51,12 @@ body {
     border: none;
     cursor: pointer;
   }
-  .btn-share {
+  .btn.btn-share {
     background: #2196f3;
   }
-  .btn-update {
+  .btn.btn-update {
     background: #4caf50;
   }
-  .btn-reject {
+  .btn.btn-reject {
     background: #e74c3c;
   }
