@@ -27,6 +27,7 @@ def dashboard():
     if "user" in session:
         username = session["user"]
         conn = sqlite3.connect("users.db")
+        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
         user_row = cursor.fetchone()
@@ -48,12 +49,38 @@ def dashboard():
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (user_id, username, full_request, timestamp, 'pending', startDate, endDate))
             conn.commit()
+            
+            flash("Your request has been submitted and is pending approval.", "info")
 
         cursor.execute("""
             SELECT request, timestamp, status, start_date, end_date FROM requests
             WHERE user_id = ? ORDER BY timestamp DESC
         """, (user_id,))
         user_requests = cursor.fetchall()
+        
+        # Notify user if any request's status has changed
+        cursor.execute("""
+            SELECT id, request, status FROM requests
+            WHERE user_id = ? AND status IN ('accepted', 'declined') AND (last_status IS NULL OR last_status != status)
+            ORDER BY timestamp DESC
+        """, (user_id,))
+        updates = cursor.fetchall()
+            
+        for req in updates:
+            if req["status"] == "accepted":
+                flash(f"Your request '{req['request']}' was accepted.", "accept")
+            elif req["status"] == "declined":
+                flash(f"Your request '{req['request']}' was declined.", "deny")
+            
+        # Mark those requests as notified (last_status = status)
+        request_ids = [str(req["id"]) for req in updates]
+        if request_ids:
+            cursor.execute(f"""
+                UPDATE requests SET last_status = status WHERE id IN ({','.join(['?'] * len(request_ids))})
+            """, request_ids)
+            conn.commit()
+            
+        
         conn.close()
 
         return render_template("HTML/dashboard.html", username=username, requests=user_requests)
@@ -85,6 +112,8 @@ def create_request():
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (user_id, username, full_request, timestamp, 'pending', startDate, endDate))
             conn.commit()
+            
+            flash("Your request has been submitted and is pending approval.", "info")
 
         cursor.execute("SELECT * FROM requests WHERE user_id = ? AND status = 'pending' ORDER BY timestamp DESC", (user_id,))
         pending_requests = cursor.fetchall()
@@ -203,7 +232,14 @@ def update_request(request_id, action):
         # Update the database
         conn = sqlite3.connect("users.db")
         cursor = conn.cursor()
-        cursor.execute("UPDATE requests SET status = ? WHERE id = ?", (new_status, request_id))
+        # Fetch the current status
+        cursor.execute("SELECT status FROM requests WHERE id = ?", (request_id,))
+        current_status = cursor.fetchone()
+        if current_status:
+            cursor.execute("""
+                UPDATE requests SET status = ?, last_status = ? WHERE id = ?
+            """, (new_status, current_status[0], request_id))
+        #
         conn.commit()
         conn.close()
 
