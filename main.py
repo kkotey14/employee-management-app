@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, abort
+from flask import Flask, render_template, request, redirect, url_for, session, abort, flash
 import sqlite3
 import bcrypt
 from datetime import datetime
@@ -206,6 +206,9 @@ def update_request(request_id, action):
         cursor.execute("UPDATE requests SET status = ? WHERE id = ?", (new_status, request_id))
         conn.commit()
         conn.close()
+
+        # Update Notification
+        flash(f"Request {new_status}.", "accept" if new_status == "accepted" else "deny")
         
         # Redirect based on the user's role
         if session.get("role") == "manager":
