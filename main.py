@@ -364,12 +364,13 @@ def delete_user(user_id):
 @app.route("/admin_requests")
 def admin_requests():
     if "user" in session and session.get("role") == "admin":
+        username = session.get("user")
         conn = sqlite3.connect("users.db")
         cursor = conn.cursor()
         cursor.execute("SELECT id, username, request, timestamp, status, start_date, end_date FROM requests ORDER BY timestamp DESC")
         all_requests = cursor.fetchall()
         conn.close()
-        return render_template("HTML/admin_requests.html", requests=all_requests)
+        return render_template("HTML/admin_requests.html", requests=all_requests, username=username)
     return redirect(url_for("login"))
 
 @app.route("/share_request/<int:request_id>")
