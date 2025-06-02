@@ -1,0 +1,14 @@
+# Ignore the database
+*.db
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore virtual environment
+venv/
+
+# Ignore environment variable files
+.env
+
+users.db
