@@ -21,11 +21,15 @@ def init_db():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS requests (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
             username TEXT NOT NULL,
             request TEXT NOT NULL,
             status TEXT DEFAULT 'Pending',
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (username) REFERENCES users (username)
+            start_date TEXT,
+            end_date TEXT,
+            last_status TEXT,
+            FOREIGN KEY (user_id) REFERENCES users (id)
         )
     """)
 
