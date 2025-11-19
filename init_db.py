@@ -2,7 +2,7 @@ import sqlite3
 import bcrypt
 
 def init_db():
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect("/tmp/users.db")
     cursor = conn.cursor()
 
     # Create users table
@@ -33,7 +33,7 @@ def init_db():
     conn.close()
 
 def seed_admin():
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect("/tmp/users.db")
     cursor = conn.cursor()
 
     admin_password = bcrypt.hashpw("admin_password".encode("utf-8"), bcrypt.gensalt())

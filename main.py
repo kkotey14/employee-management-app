@@ -19,7 +19,7 @@ def login_required(func):
     return func
 
 def get_db_connection():
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect("/tmp/users.db")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -35,7 +35,7 @@ def index():
 def dashboard():
     if "user" in session:
         username = session["user"]
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect("/tmp/users.db")
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
@@ -99,7 +99,7 @@ def dashboard():
 def create_request():
     if "user" in session:
         username = session["user"]
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect("/tmp/users.db")
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
         user_row = cursor.fetchone()
@@ -135,7 +135,7 @@ def create_request():
 def request_history():
     if "user" in session:
         username = session["user"]
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect("/tmp/users.db")
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
         user_row = cursor.fetchone()
@@ -186,7 +186,7 @@ def clear_requests():
 def manager_dashboard():
     if "user" in session and session.get("role") == "manager":
         username = session.get("user")
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect("/tmp/users.db")
         cursor = conn.cursor()
         # Include start_date and end_date in the select query.
         cursor.execute("""
@@ -239,7 +239,7 @@ def update_request(request_id, action):
             abort(400, "Invalid action specified.")
 
         # Update the database
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect("/tmp/users.db")
         cursor = conn.cursor()
         # Fetch the current status
         cursor.execute("SELECT status FROM requests WHERE id = ?", (request_id,))
@@ -296,7 +296,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         try:
-            conn = sqlite3.connect("users.db")
+            conn = sqlite3.connect("/tmp/users.db")
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
             user = cursor.fetchone()
@@ -336,7 +336,7 @@ def logout():
 def admin_panel():
     if "user" in session and session.get("role") == "admin":
         username = session.get("user")
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect("/tmp/users.db")
         cursor = conn.cursor()
         cursor.execute("SELECT id, username, role FROM users")
         all_users = cursor.fetchall()
@@ -353,7 +353,7 @@ def add_user():
             password = request.form["password"]
             role = request.form["role"]
             hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
-            conn = sqlite3.connect("users.db")
+            conn = sqlite3.connect("/tmp/users.db")
             cursor = conn.cursor()
             cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
                            (username, hashed_password, role))
@@ -366,7 +366,7 @@ def add_user():
 @app.route("/edit_user/<int:user_id>", methods=["GET", "POST"])
 def edit_user(user_id):
     if "user" in session and session.get("role") == "admin":
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect("/tmp/users.db")
         cursor = conn.cursor()
         if request.method == "POST":
             username = request.form["username"]
@@ -389,7 +389,7 @@ def edit_user(user_id):
 @app.route("/delete_user/<int:user_id>")
 def delete_user(user_id):
     if "user" in session and session.get("role") == "admin":
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect("/tmp/users.db")
         cursor = conn.cursor()
         cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
         conn.commit()
@@ -402,7 +402,7 @@ def delete_user(user_id):
 def admin_requests():
     if "user" in session and session.get("role") == "admin":
         username = session.get("user")
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect("/tmp/users.db")
         cursor = conn.cursor()
         cursor.execute("SELECT id, username, request, timestamp, status, start_date, end_date FROM requests ORDER BY timestamp DESC")
         all_requests = cursor.fetchall()
@@ -413,7 +413,7 @@ def admin_requests():
 @app.route("/share_request/<int:request_id>")
 def share_request(request_id):
     if "user" in session and session.get("role") == "admin":
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect("/tmp/users.db")
         cursor = conn.cursor()
         cursor.execute("UPDATE requests SET status = ? WHERE id = ?", ("pending_manager", request_id))
         conn.commit()
@@ -424,7 +424,7 @@ def share_request(request_id):
 
 
 def get_user(username):
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect("/tmp/users.db")
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
     user = cursor.fetchone()
