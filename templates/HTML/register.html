@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Register</title>
     <!-- CSS file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/login.css') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/IMGs/favicon.ico">
@@ -13,15 +13,15 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>Register</h2>
         <form method="POST">
             <input type="text" name="username" class="input-field" placeholder="Username" required><br>
             <input type="password" name="password" class="input-field" placeholder="Password" required><br>
             {% if error %}
                 <div class="error-message">{{ error }}</div>
             {% endif %}
-            <button type="submit" class="login-btn">Login</button>
-            <a href="{{ url_for('register') }}" class="register-btn">Register</a>
+            <button type="submit" class="login-btn">Register</button>
+            <a href="{{ url_for('login') }}" class="register-btn">Back to Login</a>
         </form>
     </div>
 </body>

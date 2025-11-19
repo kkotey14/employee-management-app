@@ -257,6 +257,32 @@ def update_request(request_id, action):
             return redirect(url_for("admin_requests"))
     return redirect(url_for("login"))
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+
+        conn = get_db_connection()
+        try:
+            conn.execute(
+                "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+                (username, hashed_password.decode('utf-8'), "user"),
+            )
+            conn.commit()
+        except conn.IntegrityError:
+            flash("Username already taken.", "error")
+            return render_template("HTML/register.html")
+        finally:
+            conn.close()
+
+        flash("Registration successful! Please log in.", "success")
+        return redirect(url_for("login"))
+
+    return render_template("HTML/register.html")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
