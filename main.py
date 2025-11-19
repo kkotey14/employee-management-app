@@ -2,6 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, session, a
 import sqlite3
 import bcrypt
 from datetime import datetime
+from init_db import init_db, seed_admin
+
+# Initialize the database and seed the admin user
+init_db()
+seed_admin()
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"  # Change to a proper secret key
@@ -260,6 +265,8 @@ def update_request(request_id, action):
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
         username = request.form["username"]
         password = request.form["password"]
         hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
@@ -267,8 +274,8 @@ def register():
         conn = get_db_connection()
         try:
             conn.execute(
-                "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
-                (username, hashed_password.decode('utf-8'), "user"),
+                "INSERT INTO users (first_name, last_name, username, password, role) VALUES (?, ?, ?, ?, ?)",
+                (first_name, last_name, username, hashed_password.decode('utf-8'), "user"),
             )
             conn.commit()
         except conn.IntegrityError:
