@@ -292,6 +292,13 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if "user" in session:
+        if session["role"] == "admin":
+            return redirect(url_for("admin_panel"))
+        elif session["role"] == "manager":
+            return redirect(url_for("manager_dashboard"))
+        else:
+            return redirect(url_for("dashboard"))
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
