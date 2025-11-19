@@ -22,6 +22,10 @@ def get_db_connection():
 # Existing Routes (User & Manager)
 # ----------------------------
 
+@app.route("/")
+def index():
+    return redirect(url_for("login"))
+
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     if "user" in session:
