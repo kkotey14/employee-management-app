@@ -395,4 +395,4 @@ def get_user(username):
     return user
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
