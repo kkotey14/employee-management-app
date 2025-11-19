@@ -36,13 +36,13 @@ def dashboard():
     if "user" in session:
         username = session["user"]
         conn = sqlite3.connect("/tmp/users.db")
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
         user_row = cursor.fetchone()
         if not user_row:
+            session.pop("user", None)
+            session.pop("role", None)
+            flash("Your session has expired. Please log in again.", "error")
             conn.close()
-            return "User not found", 404
+            return redirect(url_for("login"))
         user_id = user_row[0]
 
         if request.method == "POST":
@@ -96,17 +96,19 @@ def dashboard():
     return redirect(url_for("login"))
 
 @app.route("/create_request", methods=["GET","POST"])
-def create_request():
-    if "user" in session:
-        username = session["user"]
-        conn = sqlite3.connect("/tmp/users.db")
-        cursor = conn.cursor()
-        cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
-        user_row = cursor.fetchone()
-        if not user_row:
-            conn.close()
-            return "User not found", 404
-        user_id = user_row[0]
+    def create_request():
+        if "user" in session:
+            username = session["user"]
+            conn = sqlite3.connect("/tmp/users.db")
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+            user_row = cursor.fetchone()
+            if not user_row:
+                session.pop("user", None)
+                session.pop("role", None)
+                flash("Your session has expired. Please log in again.", "error")
+                conn.close()
+                return redirect(url_for("login"))        user_id = user_row[0]
 
         if request.method == "POST":
             requestType = request.form["requestType"]
@@ -140,8 +142,11 @@ def request_history():
         cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
         user_row = cursor.fetchone()
         if not user_row:
+            session.pop("user", None)
+            session.pop("role", None)
+            flash("Your session has expired. Please log in again.", "error")
             conn.close()
-            return "User not found", 404
+            return redirect(url_for("login"))
         user_id = user_row[0]
 
         if request.method == "POST":
