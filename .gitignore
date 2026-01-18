@@ -22,3 +22,6 @@ __pycache__/
 
 # Local history
 .lh/
+
+# R history
+.Rhistory
