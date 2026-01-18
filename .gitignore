@@ -19,3 +19,6 @@ users.db
 # Python
 __pycache__/
 *.pyc
+
+# Local history
+.lh/
